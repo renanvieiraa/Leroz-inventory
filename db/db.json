@@ -1,6 +1,6 @@
 {
-    "posts": [
-      { "id": 1, "title": "json-server", "author": "typicode" }
+    "users": [
+      { "id": 1, "Name": "json-server", "LastName": "typicode", "login": "admin", "password": "admin"}
     ],
     "comments": [
       { "id": 1, "body": "some comment", "postId": 1 }
