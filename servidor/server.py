@@ -1,17 +1,19 @@
 from collections import defaultdict
+from re import X
 import flask
 from flask import json
 from flask.json import JSONDecoder, JSONEncoder, jsonify
 from flask.wrappers import Response
 from flask_cors.decorator import cross_origin
 from pymongo import MongoClient
-from flask import Flask, Request, jsonify
+from flask import Flask, Request, jsonify, request
 from flask_cors import CORS
 # from werkzeug.wrappers import request
-import requests
+# from werkzeug.wrappers import request
+# import requests
 
 # //Importação das classes
-import auth
+from auth import Auth
 
 cliente = MongoClient('mongodb://localhost:27017')
 
@@ -45,7 +47,7 @@ def usuarios():
         result.append(x)
 
     
-    return auth.setType(json.dumps(result, default=str))
+    return Auth.setType(json.dumps(result, default=str))
 
 @app.route('/users/<page_name>', methods=['GET'])
 def usuario(page_name):
@@ -58,18 +60,34 @@ def usuario(page_name):
 
 # print(colecao.find_one())
 
-@app.route('/teste')
+@app.route('/auth')
 def rotaTeste():
 
-    res = Response(response="Teste ok", status=200)
-    # res.mimetype = 'teste/teste'
+    # result = ""
+    try:
+
+        params = request.args
+        user = params['username']
+        password = params['password']
+        
+        find = colecao.find({"nome": user, "password": password}).count()
+        if(find > 0):
+            result = "Acesso Autorizado"
+        else:
+            
+            result = "Acesso Negado"
+        return Auth.setType(result,'text/html')
+    except:
+        result = 'Error de parametros inválidos'
+        return Auth.setType(result, 'text/html')
 
 
-    # res.headers['content-type'] = "application/json"
-    
-    return res
+    # return Auth.setType(result)
     # return json.dump(colecao.find())
-    
+
+@app.route('/teste')    
+def teste():
+    return Auth.teste('admin')
 
 # Mantém o servidor rodando
 if __name__ == "__main__":

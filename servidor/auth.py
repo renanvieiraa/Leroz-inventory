@@ -3,6 +3,7 @@ import os
 from flask.wrappers import Response
 from pymongo import MongoClient
 import json
+import hashlib
 
 # connect = MongoClient()
 
@@ -41,10 +42,12 @@ class Auth:
         
         pass
     
-    def teste():
-        pass
+    def teste(string):
+        return hashlib.sha256(str(string).encode('utf-8')).hexdigest()
+    def setType(contentRequest='ok',type='application/json'):
+        r = Response(contentRequest)
+        r.mimetype = type
+        return r
 
-def setType(contentRequest='ok',type='application/json'):
-    r = Response(contentRequest)
-    r.mimetype = type
-    return r
+
+
