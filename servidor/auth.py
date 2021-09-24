@@ -42,12 +42,23 @@ class Auth:
         
         pass
     
-    def teste(string):
+    def str2hash(string):
         return hashlib.sha256(str(string).encode('utf-8')).hexdigest()
     def setType(contentRequest='ok',type='application/json'):
         r = Response(contentRequest)
         r.mimetype = type
         return r
 
+    def setHeader(key, value):
+        # r = Response.headers.set(key, value)
+        r = Response.headers[key] = value
+        return r
+
+    def login(username, passw):
+        result_db = db.users.find({"nome":username, "password":passw})
+        if(result_db.count() > 0):
+            # r = Auth.setHeader('auth',hashlib.md5(str('Autorizado').encode('utf-8')).hexdigest())
+            r = Auth.setHeader('teste',"teste")
+        return print(r)
 
 

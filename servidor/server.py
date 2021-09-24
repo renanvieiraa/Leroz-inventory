@@ -1,4 +1,5 @@
 from collections import defaultdict
+from os import error
 from re import X
 import flask
 from flask import json
@@ -72,22 +73,24 @@ def rotaTeste():
         
         find = colecao.find({"nome": user, "password": password}).count()
         if(find > 0):
+            Auth.login(user,password)
             result = "Acesso Autorizado"
         else:
-            
             result = "Acesso Negado"
         return Auth.setType(result,'text/html')
-    except:
+    except error:
+
         result = 'Error de parametros inválidos'
+        # result = user +" "+password
         return Auth.setType(result, 'text/html')
 
 
     # return Auth.setType(result)
     # return json.dump(colecao.find())
 
-@app.route('/teste')    
-def teste():
-    return Auth.teste('admin')
+@app.route('/str2hash')    
+def str2hash():
+    return Auth.str2hash('admin')
 
 # Mantém o servidor rodando
 if __name__ == "__main__":
