@@ -1,9 +1,11 @@
 
 import os
-from flask.wrappers import Response
+from flask.wrappers import Request, Response
 from pymongo import MongoClient
 import json
 import hashlib
+import jwt
+
 
 # connect = MongoClient()
 
@@ -35,30 +37,48 @@ connect = MongoClient(_db.host(),_db.port())
 db = connect.lerozdb
 
 
-print(db.users.find())
-
 class Auth:
-    def __init__(self, user_id, user_pass, token):
+    def __init__(self):
         
-        pass
+        return 
+        
     
     def str2hash(string):
         return hashlib.sha256(str(string).encode('utf-8')).hexdigest()
-    def setType(contentRequest='ok',type='application/json'):
-        r = Response(contentRequest)
+    
+    
+    # Retorno da requisição, conteudo que irá retornar no corpo, o tipo de aplicação e code de retorno.
+    def returnRequest(contentRequest='ok',type='application/json',status=200):
+        r = Response(contentRequest,content_type=type,status=status)
         r.mimetype = type
+        
+        # r.headers.add("Authorization","Bearer "+token)
         return r
 
+
+    # DEFINE UM NOVO HEADER, PARAMETROS KEY E VALUE
     def setHeader(key, value):
-        # r = Response.headers.set(key, value)
-        r = Response.headers[key] = value
+        r = Response().headers.add(key,value)
         return r
+
+    # PEGA HEADER, PARAMETROS KEY
+    def getToken(token):
+        return str("teste")
 
     def login(username, passw):
         result_db = db.users.find({"nome":username, "password":passw})
         if(result_db.count() > 0):
-            # r = Auth.setHeader('auth',hashlib.md5(str('Autorizado').encode('utf-8')).hexdigest())
             r = Auth.setHeader('teste',"teste")
         return print(r)
+    
+    # GENERATE TOKEN JWT STANDARD
+    def gen_token(payload_data, key):
+        # result = jwt.encode(obj_json,str(key),algorithm={"typ": "JWT"})
+        result = jwt.encode(payload=payload_data,key=key)
+        return result
+    
+    def decode_token(jwttoken,secret_key,hash_type="HS256"):
+        result = jwt.decode(jwttoken,str(secret_key),algorithms=hash_type)
+        return result
 
 
